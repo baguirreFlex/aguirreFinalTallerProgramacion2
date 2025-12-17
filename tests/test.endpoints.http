@@ -1,0 +1,152 @@
+### API RESTful - Gestión de Productos
+### Base URL
+@baseUrl = http://localhost:3000
+
+### ============================================
+### AUTENTICACIÓN
+### ============================================
+### 
+### Para usar JWT, primero generar un token (ver ejemplo abajo) y luego usar:
+### Authorization: Bearer <token>
+###
+### Generar token JWT de prueba (usar en terminal o herramienta externa):
+### node -e "const jwt=require('jsonwebtoken'); console.log(jwt.sign({userId:1}, 'secret-key-change-in-production', {expiresIn:'1h'}))"
+###
+### O usar este token de ejemplo (puede expirar):
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2NTkyNjEwNCwiZXhwIjoxNzY1OTI5NzA0fQ.42v-F2Rfs6utDA1Kjzurgx839KYr_yBW2aG0-__G8Oc
+
+### ============================================
+### PRODUCTOS - CRUD
+### ============================================
+
+### 1. Crear producto CON fechaIngreso (POST) - No requiere autenticación
+POST {{baseUrl}}/api/v1/productos
+Content-Type: application/json
+
+{
+  "producto": "Laptop Dell XPS 15",
+  "stockAmount": 10,
+  "fechaIngreso": "2024-01-15"
+}
+
+### 2. Crear producto SIN fechaIngreso (se asigna fecha actual automáticamente) - No requiere Auth
+POST {{baseUrl}}/api/v1/productos
+Content-Type: application/json
+
+{
+  "producto": "Mouse Logitech MX Master",
+  "stockAmount": 25
+}
+
+### 3. Listar todos los productos (GET) - No requiere autenticación
+GET {{baseUrl}}/api/v1/productos
+
+### 4. Obtener producto por ID (GET) - No requiere autenticación
+### Reemplazar :id con un ID real de un producto creado
+GET {{baseUrl}}/api/v1/productos/:id
+
+### 5. Intentar actualizar producto SIN autenticación (arroja 401)
+### Reemplazar :id con un ID real de un producto creado
+PUT {{baseUrl}}/api/v1/productos/:id
+
+{
+  "producto": "Laptop Dell XPS 15 Actualizada",
+  "stockAmount": 15
+}
+
+### 6. Actualizar producto CON JWT (PUT) - Requiere autenticación
+### Reemplazar :id con un ID real de un producto creado
+### Nota: El stock solo puede incrementarse o decrementarse de a uno
+PUT {{baseUrl}}/api/v1/productos/:id
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+  "producto": "Laptop Dell XPS 15 Actualizada v2",
+  "stockAmount": 11
+}
+
+### 6b. Actualizar stock incrementando de a uno (ejemplo: de 10 a 11)
+### Reemplazar :id con un ID real de un producto creado
+PUT {{baseUrl}}/api/v1/productos/:id
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+  "stockAmount": 11
+}
+
+### 6c. Actualizar stock decrementando de a uno (ejemplo: de 11 a 10)
+### Reemplazar :id con un ID real de un producto creado
+PUT {{baseUrl}}/api/v1/productos/:id
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+  "stockAmount": 11
+}
+
+### 7. Intentar eliminar producto SIN autenticación (falla con 401)
+### Reemplazar :id con un ID real de un producto creado
+DELETE {{baseUrl}}/api/v1/productos/:id
+
+### 8. Eliminar producto CON JWT (DELETE) - Requiere autenticación
+### Reemplazar :id con un ID real de un producto creado
+DELETE {{baseUrl}}/api/v1/productos/:id
+Authorization: Bearer {{jwtToken}}
+
+
+
+### ============================================
+### ALBUMS CSV
+### ============================================
+
+### 9. Obtener CSV de albums (GET) - No requiere autenticación
+GET {{baseUrl}}/api/v1/albums/csv
+
+### ============================================
+### VALIDACIONES Y ERRORES
+### ============================================
+
+### 10. Intentar crear producto con stockAmount negativo (debe fallar)
+POST {{baseUrl}}/api/v1/productos
+Content-Type: application/json
+
+{
+  "producto": "Producto Inválido",
+  "stockAmount": -5
+}
+
+### 11. Intentar crear producto sin nombre (debe fallar)
+POST {{baseUrl}}/api/v1/productos
+Content-Type: application/json
+
+{
+  "producto": "",
+  "stockAmount": 10
+}
+
+### 12. Intentar crear producto sin stockAmount (debe fallar)
+POST {{baseUrl}}/api/v1/productos
+Content-Type: application/json
+
+{
+  "producto": "Producto sin stock"
+}
+
+### 13. Intentar actualizar stock con diferencia mayor a 1 (debe fallar)
+### Ejemplo: Si el stock actual es 10, intentar actualizar a 12 o 8
+### Reemplazar :id con un ID real de un producto creado
+PUT {{baseUrl}}/api/v1/productos/673c9af9-dd0a-4188-bcad-9b40ddbc7968
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+  "stockAmount": 1
+}
+
+### 14. Obtener producto con ID inexistente (retornar 404)
+GET {{baseUrl}}/api/v1/productos/00000000-0000-0000-0000-000000000000
+
+### 15. Health check
+GET {{baseUrl}}/health

@@ -13,7 +13,7 @@
 ### node -e "const jwt=require('jsonwebtoken'); console.log(jwt.sign({userId:1}, 'secret-key-change-in-production', {expiresIn:'1h'}))"
 ###
 ### O usar este token de ejemplo (puede expirar):
-@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2NTkyNjEwNCwiZXhwIjoxNzY1OTI5NzA0fQ.42v-F2Rfs6utDA1Kjzurgx839KYr_yBW2aG0-__G8Oc
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc2NTkzMDMzNywiZXhwIjoxNzY1OTMzOTM3fQ.DuXWCeXILMt2ixjPZSjzc9Y84uYm8i1LlWFI7jhlaXI
 
 ### ============================================
 ### PRODUCTOS - CRUD
